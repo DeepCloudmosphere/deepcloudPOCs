@@ -1,5 +1,5 @@
 
-#  K8s deployment with PHP,NGINX,MARIADB  using minikube cluster
+#  K8s deployment with php , nginx , mariadb  using Minikube Cluster
 
 ## minikube installation guide
 
