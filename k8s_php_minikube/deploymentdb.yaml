@@ -20,7 +20,7 @@ spec:
        spec:
          containers:
            - name: mysqldb-ctr
-             image: mysql 
+             image: mariadb 
              volumeMounts:
                 - name: mysql-data
                   mountPath: var/lib/mysql
@@ -28,7 +28,7 @@ spec:
                - containerPort: 3306
              env: 
               - name: MYSQL_ROOT_PASSWORD
-                value: "mysql"
+                value: "mariadb"
               - name : MYSQL_DATABASE
                 value: ecomdb 
               - name : MYSQL_USER
