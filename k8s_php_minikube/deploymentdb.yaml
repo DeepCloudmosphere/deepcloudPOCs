@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+   name: deploymentdb
+   labels:
+      tier: backend
+
+spec:
+    replicas: 2
+    selector:
+      matchLabels:
+          app: mysqldb
+          tier: backend
+    template:
+       metadata:
+           name: db-pod
+           labels:
+             app:  mysqldb
+             tier: backend
+       spec:
+         containers:
+           - name: mysqldb-ctr
+             image: mysql 
+             volumeMounts:
+                - name: mysql-data
+                  mountPath: var/lib/mysql
+             ports:
+               - containerPort: 3306
+             env: 
+              - name: MYSQL_ROOT_PASSWORD
+                value: "mysql"
+              - name : MYSQL_DATABASE
+                value: ecomdb 
+              - name : MYSQL_USER
+                value: "deepak"
+              - name : MYSQL_PASSWORD
+                value: "deepak123"
+
+
+         volumes:
+             - name: mysql-data
+                 

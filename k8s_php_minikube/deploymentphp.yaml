@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: deploymentphp
+    labels:
+       tier: frontend
+
+spec:
+    replicas: 5
+    selector:
+       matchLabels:
+           app: myphp 
+           tier: frontend
+   
+    template:
+         metadata:
+             name: php-pod
+             labels:
+               app: myphp
+               tier: frontend
+ 
+         spec:
+            containers:
+               - name: nginx-ctr
+                 image: deepcloudmosphere/nginx:php
+                 ports:
+                   - containerPort: 80
+
+               - name: phpfpm
+                 image: deepcloudmosphere/php:mysqli
+                 ports:
+                   - containerPort: 9000
+
+
+
