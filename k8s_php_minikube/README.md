@@ -162,7 +162,7 @@ spec:
 ```
 
 ## Step 5 - Create NodePort type service for deploymentphp.yaml
-it will make forword request from Port on Node to port on Pod and user will acces this application by nodePort with node ip ex:->` 192.168.92.18:30005 `
+it will make forword request from Port on Node to port on Pod and user will acces this application by nodePort with node ip ex:->` http://192.168.59.110:30005/ `
 
 ### servicephp.yaml
 
@@ -249,8 +249,14 @@ so, it can find database for by db service  name
 
 ### Load data in mariadb  Database.
 
--  minikube ssh 
+-  Go inside cluster in this case minikube cluster:-
+            
+            minikube ssh 
 
+- Find database container by `docker ps ` command and copy container id :- 
+            
+            docker exec -it [container id] /bin/bash
+            
 
 - Load Product Inventory Information to database
  ```
@@ -342,10 +348,11 @@ check all are running or not by :->
 
             minikube ip
 
-Paste ip on browser with service port ex-> `192.168.92.18:30005`
+Paste ip on browser with service port ex-> `http://192.168.59.110:30005/`
 
           
 
+![Screenshot 2022-04-02 at 1 40 53 AM](https://user-images.githubusercontent.com/98619865/161334767-2f344ccb-924c-41c4-89df-5c04413cf254.png)
 
 
 
