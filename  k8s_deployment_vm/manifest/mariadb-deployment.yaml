@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mariadb-dp
+  labels:
+     tier: back-end
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      tier: back-end
+      web: db 
+  template:
+    metadata:
+       name: mariadb-pod
+       labels:
+          tier: back-end
+          web: db
+    spec:
+     containers:
+       - name: mariadb-ctr
+         image: mariadb 
+         ports:
+           - containerPort: 3306
+         volumeMounts:
+          - mountPath: /var/lib/mysql
+            name: mysql-data
+         env:
+           - name: MYSQL_ROOT_PASSWORD
+             value: mysql
+           - name: MYSQL_DATABASE
+             value: ecomdb
+           - name: MYSQL_USER
+             value: deepak
+           - name: MYSQL_PASSWORD
+             value: deepak123 
+
+     volumes: 
+       - name: mysql-data
+      
+
+          

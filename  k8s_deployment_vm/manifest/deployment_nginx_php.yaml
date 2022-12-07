@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dp-nginx-php
+  labels:
+    name: dp-nginx-php
+spec:
+  replicas: 2
+  selector:
+     matchLabels:
+         web: nginx-php
+         tier: front-end
+  template:
+     metadata:
+         name: nginx-php-pod
+         labels:
+            web: nginx-php
+            tier: front-end
+     spec:
+       containers:
+           - name: php-ctr
+             image: deepcloudmosphere/dp-nginx-php:phpfpm
+             ports:
+               - containerPort: 9000
+             volumeMounts:
+               - mountPath: /opt/
+                 name: my-data
+          #  - name: nginx-ctr
+          #    image: deepcloudmosphere/dp-nginx-php:nginx
+          #    ports:
+          #      - containerPort: 80
+       initContainers:
+           - name: init-myservice
+             image: deepcloudmosphere/dp-nginx-php:agent
+             command: ['sh', '-c', 'git clone https://github.com/kodekloudhub/learning-app-ecommerce.git/ /opt/' ]
+             volumeMounts:
+               - mountPath: /opt/
+                 name: my-data
+       volumes:
+          - name: my-data
+   
+
+
+
