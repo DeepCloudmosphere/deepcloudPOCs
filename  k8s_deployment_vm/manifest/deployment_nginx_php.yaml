@@ -23,21 +23,25 @@ spec:
              ports:
                - containerPort: 9000
              volumeMounts:
-               - mountPath: /opt/
+               - mountPath: /var/www/html/
                  name: my-data
-          #  - name: nginx-ctr
-          #    image: deepcloudmosphere/dp-nginx-php:nginx
-          #    ports:
-          #      - containerPort: 80
+           - name: nginx-ctr
+             image: deepcloudmosphere/dp-nginx-php:nginx
+             ports:
+               - containerPort: 80
+             volumeMounts:
+               - mountPath: /var/www/html/
+                 name: my-data
        initContainers:
            - name: init-myservice
-             image: deepcloudmosphere/dp-nginx-php:agent
-             command: ['sh', '-c', 'git clone https://github.com/kodekloudhub/learning-app-ecommerce.git/ /opt/' ]
+             image: deepcloudmosphere/dp-nginx-php:init-helper
+             command: ['sh', '-c', 'git clone https://github.com/Dountless/web-app-ecommerce.git/ /opt/' ]
              volumeMounts:
                - mountPath: /opt/
                  name: my-data
        volumes:
           - name: my-data
+            emptyDir: {}
    
 
 
