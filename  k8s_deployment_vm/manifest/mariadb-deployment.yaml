@@ -37,7 +37,7 @@ spec:
         volumeMounts:
         - mountPath: /var/lib/mysql
           name: mysql-data
-        - mountPath: /docker-entrypoint-initdb.d
+        - mountPath: /docker-entrypoint-initdb.d #this dir executed when ctr will start 
           name: mysql-product-data
 
 
