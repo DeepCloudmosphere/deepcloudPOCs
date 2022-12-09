@@ -22,6 +22,10 @@ spec:
         image: deepcloudmosphere/dp-nginx-php:phpfpm
         ports:
         - containerPort: 9000
+        envFrom:
+        - configMapRef:
+            name: app-config
+
         volumeMounts:
         - mountPath: /var/www/html/
           name: my-data
