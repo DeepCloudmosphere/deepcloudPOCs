@@ -30,9 +30,31 @@ spec:
         ports:
         - containerPort: 3306
         #environment variable from cofigmap
-        envFrom:
-        - configMapRef:
-            name: mysql-config
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: php-db-secret
+              key: MYSQL_ROOT_PASSWORD
+
+        - name: MYSQL_USER
+          valueFrom:
+            configMapKeyRef:
+              name: php-db-configmap
+              key: USER
+
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: php-db-secret
+              key: DB_PASSWORD
+
+        - name: MYSQL_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: php-db-secret
+              key: DB_DATABASE
+
         # volume mount into mysql ctr
         volumeMounts:
         - mountPath: /var/lib/mysql

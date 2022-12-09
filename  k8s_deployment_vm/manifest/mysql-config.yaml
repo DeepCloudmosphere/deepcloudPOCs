@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: mysql-config
-data:
-  MYSQL_ROOT_PASSWORD: mysql
-  MYSQL_DATABASE: ecomdb
-  MYSQL_USER: deepak
-  MYSQL_PASSWORD: deepak123

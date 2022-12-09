@@ -18,17 +18,7 @@ spec:
         tier: front-end
     spec:
       containers:
-      - name: php-ctr
-        image: deepcloudmosphere/dp-nginx-php:phpfpm
-        ports:
-        - containerPort: 9000
-        envFrom:
-        - configMapRef:
-            name: app-config
 
-        volumeMounts:
-        - mountPath: /var/www/html/
-          name: my-data
       - name: nginx-ctr
         image: deepcloudmosphere/dp-nginx-php:nginx
         ports:
@@ -36,6 +26,38 @@ spec:
         volumeMounts:
         - mountPath: /var/www/html/
           name: my-data
+
+      - name: php-ctr
+        image: deepcloudmosphere/dp-nginx-php:phpfpm
+        ports:
+        - containerPort: 9000
+        env:
+        - name: DB_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              name: php-db-configmap
+              key: USER
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: php-db-configmap
+              key: HOST
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: php-db-secret
+              key: DB_PASSWORD
+        - name: DB_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: php-db-secret
+              key: DB_DATABASE
+
+        volumeMounts:
+        - mountPath: /var/www/html/
+          name: my-data
+
+
       initContainers:
       - name: init-myservice
         image: deepcloudmosphere/dp-nginx-php:init-helper
