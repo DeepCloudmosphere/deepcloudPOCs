@@ -31,22 +31,27 @@ spec:
         image: deepcloudmosphere/dp-nginx-php:phpfpm
         ports:
         - containerPort: 9000
+        # env variable for mysqli connector in php image 
         env:
+        # database user
         - name: DB_USERNAME
           valueFrom:
             configMapKeyRef:
               name: php-db-configmap
               key: USER
+        #database host
         - name: DB_HOST
           valueFrom:
             configMapKeyRef:
               name: php-db-configmap
               key: HOST
+        # database password
         - name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
               name: php-db-secret
               key: DB_PASSWORD
+        # database name
         - name: DB_DATABASE
           valueFrom:
             secretKeyRef:
