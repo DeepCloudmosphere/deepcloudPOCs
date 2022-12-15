@@ -1,4 +1,12 @@
-server {  
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+
+data:
+  default.conf: |-
+  
+    server {  
 
      listen 80 default_server;  
      root /var/www/html;  

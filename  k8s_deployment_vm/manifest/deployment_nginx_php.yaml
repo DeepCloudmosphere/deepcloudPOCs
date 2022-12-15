@@ -17,21 +17,43 @@ spec:
         web: nginx-php
         tier: front-end
     spec:
+
+      volumes:
+      - name: nginx-config-volume
+        configMap:
+          name: nginx-config
+      - name: shared-files
+        emptyDir: {}
+
       containers:
 
-      - name: nginx-ctr
-        image: deepcloudmosphere/dp-nginx-php:nginx
-        ports:
-        - containerPort: 80
-        volumeMounts:
-        - mountPath: /var/www/html/
-          name: my-data
-
       - name: php-ctr
-        image: deepcloudmosphere/dp-nginx-php:phpfpm
+        image: deepcloudmosphere/dp-nginx-php:phpfpm-code
         ports:
         - containerPort: 9000
+
+
+        volumeMounts:
+        - mountPath: /var/www/html/
+          name: shared-files
+
+        # Important! After this container has started, the PHP files
+        # in our Docker image aren't in the shared volume. We need to 
+        # get them into the shared volume. If we tried to write directly
+        # to this volume from our Docker image the files wouldn't appear
+        # in the nginx container.
+        #
+        # So, after the container has started, copy the PHP files from this
+        # container's local filesystem (/app -- added via the Docker image) 
+        # to the shared volume, which is mounted at /var/www/html.
+
+        lifecycle:
+          postStart:
+            exec:
+              command: ["/bin/sh", "-c", "cp -r /app/. /var/www/html"]
+
         # env variable for mysqli connector in php image 
+
         env:
         # database user
         - name: DB_USERNAME
@@ -58,21 +80,37 @@ spec:
               name: php-db-secret
               key: DB_DATABASE
 
+      - name: nginx-ctr
+        image: nginx
+        ports:
+        - containerPort: 80
         volumeMounts:
         - mountPath: /var/www/html/
-          name: my-data
+          name: shared-files
+        - mountPath: /etc/nginx/conf.d/
+          name: nginx-config-volume
 
 
-      initContainers:
-      - name: init-myservice
-        image: deepcloudmosphere/dp-nginx-php:init-helper
-        command: ['sh', '-c', 'git clone https://github.com/Dountless/web-app-ecommerce.git/ /opt/']
-        volumeMounts:
-        - mountPath: /opt/
-          name: my-data
-      volumes:
-      - name: my-data
-        emptyDir: {}
+
+
+
+
+
+      ##################################you can also use init container for code #######################
+
+      # initContainers:
+      # - name: init-myservice
+      #   image: deepcloudmosphere/dp-nginx-php:init-helper
+      #   command: ['sh', '-c', 'git clone https://github.com/Dountless/web-app-ecommerce.git/ /opt/']
+      #   volumeMounts:
+      #   - mountPath: /opt/
+      #     name: my-data
+      ######################################################################################################
+
+
+
+
+
 
 
 

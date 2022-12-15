@@ -5,7 +5,7 @@ metadata:
   labels:
     tier: back-end
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       tier: back-end
@@ -20,13 +20,16 @@ spec:
 
       volumes:
       - name: mysql-data
+        persistentVolumeClaim:
+          claimName: db-pv-claim
+
       - name: mysql-product-data
         configMap:
           name: db-load-script
 
       containers:
       - name: mariadb-ctr
-        image: mariadb
+        image: mariadb:10.8.6
         ports:
         - containerPort: 3306
         #environment variable from cofigmap
