@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: dp-nginx-php
+  namespace: dev
   labels:
     name: dp-nginx-php
 spec:
@@ -54,31 +55,38 @@ spec:
 
         # env variable for mysqli connector in php image 
 
-        env:
-        # database user
-        - name: DB_USERNAME
-          valueFrom:
-            configMapKeyRef:
-              name: php-db-configmap
-              key: USER
-        #database host
-        - name: DB_HOST
-          valueFrom:
-            configMapKeyRef:
-              name: php-db-configmap
-              key: HOST
-        # database password
-        - name: DB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: php-db-secret
-              key: DB_PASSWORD
-        # database name
-        - name: DB_DATABASE
-          valueFrom:
-            secretKeyRef:
-              name: php-db-secret
-              key: DB_DATABASE
+        envFrom:
+        - configMapRef:
+            name: php-db-configmap
+        - secretRef:
+            name: php-db-secret
+
+
+        # env:
+        # # database user
+        # - name: DB_USERNAME
+        #   valueFrom:
+        #     configMapKeyRef:
+        #       name: php-db-configmap
+        #       key: USER
+        # #database host
+        # - name: DB_HOST
+        #   valueFrom:
+        #     configMapKeyRef:
+        #       name: php-db-configmap
+        #       key: HOST
+        # # database password
+        # - name: DB_PASSWORD
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: php-db-secret
+        #       key: DB_PASSWORD
+        # # database name
+        # - name: DB_DATABASE
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: php-db-secret
+        #       key: DB_DATABASE
 
       - name: nginx-ctr
         image: nginx

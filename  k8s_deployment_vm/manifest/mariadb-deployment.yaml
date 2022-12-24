@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mariadb-dp
+  namespace: db
   labels:
     tier: back-end
 spec:
@@ -33,30 +34,37 @@ spec:
         ports:
         - containerPort: 3306
         #environment variable from cofigmap
-        env:
-        - name: MYSQL_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: php-db-secret
-              key: MYSQL_ROOT_PASSWORD
 
-        - name: MYSQL_USER
-          valueFrom:
-            configMapKeyRef:
-              name: php-db-configmap
-              key: USER
+        envFrom:
+        - configMapRef:
+            name: db-configmap
+        - secretRef:
+            name: db-secret
 
-        - name: MYSQL_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: php-db-secret
-              key: DB_PASSWORD
+        # env:
+        # - name: MYSQL_ROOT_PASSWORD
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: php-db-secret
+        #       key: MYSQL_ROOT_PASSWORD
 
-        - name: MYSQL_DATABASE
-          valueFrom:
-            secretKeyRef:
-              name: php-db-secret
-              key: DB_DATABASE
+        # - name: MYSQL_USER
+        #   valueFrom:
+        #     configMapKeyRef:
+        #       name: php-db-configmap
+        #       key: USER
+
+        # - name: MYSQL_PASSWORD
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: php-db-secret
+        #       key: DB_PASSWORD
+
+        # - name: MYSQL_DATABASE
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: php-db-secret
+        #       key: DB_DATABASE
 
         # volume mount into mysql ctr
         volumeMounts:

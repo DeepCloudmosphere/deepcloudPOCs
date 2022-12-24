@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: php-db-configmap
-data:
-  HOST: db
-  USER: deepak
