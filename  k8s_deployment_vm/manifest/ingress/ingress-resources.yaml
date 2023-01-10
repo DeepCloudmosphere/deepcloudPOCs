@@ -18,7 +18,7 @@ spec:
   #   secretName: ingress-ssl
   rules:
   # - host: php.deepcloud.com
-  -  http:
+  - http:
       paths:
       - path: /
         pathType: Prefix
