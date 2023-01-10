@@ -1,7 +1,7 @@
 
 # first requirment is to deploy ingress controller 
 
-# you can deploy within ingress-nginx namespace by -> kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.5.1/deploy/static/provider/cloud/deploy.yaml --watch-ingress-without-class=true
+# you can deploy within ingress-nginx namespace by -> kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.5.1/deploy/static/provider/cloud/deploy.yaml 
 
 
 
