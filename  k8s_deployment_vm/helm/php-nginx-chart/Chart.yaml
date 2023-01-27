@@ -32,7 +32,7 @@ appVersion: "1.16.0"
 dependencies:
 - name: mariadb-chart
   version: "0.1.0"
-  repository: "file://../mariadb-chart"
+  repository: "https://deepcloudmosphere.github.io/helm-charts/"
 
 maintainers:
 - name: Deepak verma
