@@ -1,0 +1,6 @@
+dependencies:
+- name: mariadb-chart
+  repository: file://../mariadb-chart
+  version: 0.1.0
+digest: sha256:a9b832afd552ae53b681a281275ff84f3e10c93d0d4c1563cc576e28c3d9176e
+generated: "2023-01-27T18:33:39.48437+05:30"
