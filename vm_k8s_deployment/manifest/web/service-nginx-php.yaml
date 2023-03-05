@@ -6,12 +6,9 @@ metadata:
 spec:
   # type: NodePort
   ports:
-  - port: 80
-    targetPort: 80
-    # nodePort: 30006
+    - port: 80
+      targetPort: 80
+      # nodePort: 30006
   selector:
     web: nginx-php
     tier: front-end
-
-
-

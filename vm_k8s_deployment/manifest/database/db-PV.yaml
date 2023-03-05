@@ -4,7 +4,8 @@ metadata:
   name: db-pv-volume
 spec:
   accessModes:
-  - ReadWriteMany
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
   capacity:
     storage: 10Gi
   # awsElasticBlockStore:
@@ -12,5 +13,3 @@ spec:
   #   fsType: ext4
   hostPath:
     path: /home/vagrant/db-pv-volume-data
-
-
