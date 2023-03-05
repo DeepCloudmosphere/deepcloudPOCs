@@ -1,0 +1,49 @@
+// CODE_CHANGES = getGitChanges()
+
+pipeline {
+    agent any
+    
+    
+    stages {
+         stage('checkout') { 
+             steps{
+               echo "clone repo..."
+               git branch: 'main', url: "https://github.com/DeepCloudmosphere/cloud_POCs.git"
+             }
+
+         }
+         stage('Build') {
+             steps {
+                 echo "building...."
+                 script{
+                      app = docker.build("deepcloudmosphere/python-web:distroless-j")
+                 }
+                 
+             }
+
+         }
+//         stage('test') {
+//            steps {
+//                 echo "testing...."                
+//             }
+
+//         }
+      
+        stage('deploy') {
+           steps {
+                echo "post to dockerhub"
+               withCredentials([
+                   usernamePassword(credentialsId: 'dockerhub-credentials', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')
+               ]){
+                   sh "docker login -u ${dockerHubUser} -p ${dockerHubPassword}"
+                   sh "docker push deepcloudmosphere/python-web:distroless-j"
+               }
+               
+            }
+
+        }          
+          
+    }
+    
+}
+

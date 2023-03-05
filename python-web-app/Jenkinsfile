@@ -1,0 +1,75 @@
+pipeline {
+    agent any
+    environment {
+        AWS_ACCOUNT_ID="913069854077"
+        AWS_DEFAULT_REGION="ap-south-1" 
+        IMAGE_REPO_NAME="jenkins-pipeline-images"
+        IMAGE_TAG= "${env.BUILD_TAG}"
+        REPOSITORY_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}"
+    }
+   
+    stages {
+        
+         stage('Logging into AWS ECR') {
+            steps {
+                script {
+                sh "aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
+                }
+                 
+            }
+        }
+        
+        stage('Cloning Git') {
+            steps {
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'b9ac935f-5609-4dd3-8c94-8b872bf68be4', url: 'git@github.com:DeepCloudmosphere/cloud_POCs.git']]])
+                emailext attachLog: true, body: 'hello this is extended email', subject: 'hello this is extended email', to: 'deepcloud.28@gmail.com'
+                
+            }
+        }
+  
+    // Building Docker images
+        stage('Building image') {
+          steps{
+            script {
+              dockerImage = docker.build("${IMAGE_REPO_NAME}:${IMAGE_TAG}","python-web-app/")
+              dockerHubImage = docker.build("deepcloudmosphere/python-web:${IMAGE_TAG}","python-web-app/")
+            }
+          }
+        }
+    
+    // Uploading Docker images into AWS ECR
+        stage('Pushing to ECR') {
+         steps{  
+             script {
+                    sh "docker tag ${IMAGE_REPO_NAME}:${IMAGE_TAG} ${REPOSITORY_URI}:$IMAGE_TAG"
+                    sh "docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:${IMAGE_TAG}"
+                    cleanWs(patterns: [[pattern: '', type: 'INCLUDE']])
+             }
+            }
+          }
+        stage('Pushing to DockerHub') {
+          steps {
+            withCredentials([usernamePassword(credentialsId: 'dockerHub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
+              sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
+              sh 'docker push  deepcloudmosphere/python-web:${IMAGE_TAG}'
+            }
+          }
+        }
+    }
+    
+    post{
+        always{
+            emailext to: "deepcloud.28@gmail.com",
+            subject: "Test Email",
+            body: "Test",
+            attachLog: true
+        }
+        success {
+                slackSend channel: "#jenkins-test-build" , message: "Build deployed successfully - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+            }
+        failure {
+                slackSend channel: "#jenkins-test-build" ,failOnError:true,message: "Build failed  - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+        }
+    }    
+}
+
